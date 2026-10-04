@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import { createCdiRepository } from '../src/backend/data/cdi-repository.js';
+import { lookupBaseline } from '../src/backend/services/cdi-lookup-service.js';
+import { projectScenario } from '../src/backend/simulation/project-scenario.js';
+import { createRunDescriptor, calculateRunResults } from '../src/backend/results/results-service.js';
+const storage = new Map();
+globalThis.localStorage = { getItem: key => storage.get(key) || null, setItem: (key, value) => storage.set(key, value) };
+const dataset = JSON.parse(await readFile(new URL('../src/backend/data/cdi-repository.json', import.meta.url)));
+const repo = createCdiRepository(dataset);
+const baselineCDI = lookupBaseline(repo, { location: { latitude: -35.115, longitude: 147.3677778 }, simulationStartDate: '2026-10-04' }).baselineCDI;
+const projection = projectScenario({ baselineCDI, droughtIntensity: 'extreme', soilType: 'sandy', waterSupply: 'irrigated', adaptations: { stubbleRetention: true, widerRows: true } });
+const completedRun = { ...await createRunDescriptor(baselineCDI, projection, 40), completedDay: 84 };
+
+test('completed run survives page-module reload, clears on reset/scenario change/Finished, and old previews stay missing', async () => {
+  const { appSession } = await import('../src/frontend/state/app-session.js?first');
+  appSession.updateSimulation({ status: 'complete', completedRun });
+  const before = await calculateRunResults(repo, appSession.get().simulation.completedRun);
+  const refreshed = (await import('../src/frontend/state/app-session.js?refresh')).appSession;
+  assert.deepEqual(refreshed.get().simulation.completedRun, completedRun);
+  assert.deepEqual(await calculateRunResults(repo, refreshed.get().simulation.completedRun), before);
+  refreshed.updateSimulation({ status: 'idle', droughtIntensity: 'moderate' });
+  assert.equal(refreshed.get().simulation.completedRun, null);
+  refreshed.updateSimulation({ status: 'complete', completedRun });
+  refreshed.finishSession();
+  assert.equal(refreshed.get().simulation.completedRun, null);
+  storage.set('farm-forward:experience:v1', JSON.stringify({ simulation: { status: 'complete', output: { soilMoisture: null, type: 'frontend-preview' } } }));
+  const legacy = (await import('../src/frontend/state/app-session.js?legacy')).appSession;
+  assert.equal(legacy.get().simulation.completedRun, null);
+  await assert.rejects(calculateRunResults(repo, legacy.get().simulation.completedRun), /Complete a simulation/);
+});

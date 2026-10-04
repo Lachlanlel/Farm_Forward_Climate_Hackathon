@@ -1,0 +1,579 @@
+{
+  "simulationModelVersion": "1.0-hackathon",
+  "resultsModelVersion": "1.0-educational-severity-swi-loss",
+  "assumptions": {
+    "version": "2026-10-04-v2",
+    "normalYieldTPerHa": 3,
+    "wheatPriceAudPerTonne": 350,
+    "baseDroughtLoss": {
+      "moderate": 0.15,
+      "severe": 0.3,
+      "extreme": 0.55
+    },
+    "yieldMethod": "clamp(normalYieldTPerHa * (1 - baseDroughtLoss[severity] * actualSWILoss / rawSeveritySWILoss), 0, normalYieldTPerHa); then wide-row adjustment",
+    "calibrationStatus": "educational-unvalidated",
+    "strategyCosts": {
+      "stubbleCostPerHa": 6,
+      "widerRowsCostPerHa": 2.4
+    },
+    "costStatus": "research-informed-scenario-assumption",
+    "costBasis": {
+      "stubble": {
+        "strategyId": "stubble-retention",
+        "valueAudPerHa": 6,
+        "status": "research-informed-scenario-assumption",
+        "basis": "representative residue-management allowance",
+        "sourceUrl": "https://www.agric.wa.gov.au/sites/gateway/files/S1%2BRebecca%2BSmith%2B2017.pdf",
+        "detail": "The referenced analysis assumes retaining stubble itself costs $0/ha and estimates reducing/managing loads at $6/ha. Farm Forward adopts $6/ha for additional residue-management effort, not the intrinsic cost of leaving stubble. Actual costs vary with stubble load, machinery and farm practice."
+      },
+      "wider": {
+        "strategyId": "wider-rows",
+        "valueAudPerHa": 2.4,
+        "status": "research-informed-scenario-assumption",
+        "basis": "representative annualised equipment/setup allowance",
+        "sourceUrl": "https://airep.com.au/wp-content/uploads/2020/07/14.-EPF00001-Economic-analysis-of-sowing-position-on-non-wetting-sand.pdf",
+        "detail": "EPARF/GRDC Guideline 14 (Ed Hunt, February 2018), page 4: approximately $30,000 additional guidance equipment, $4,800/year depreciation and interest divided across 2,000 ha = $2.40/ha. Farm Forward uses this as a proxy, not a universal quotation for conversion to 30 cm rows. Actual cost varies with machinery, guidance already owned, contractors and annual hectares.",
+        "calculation": {
+          "equipmentCapitalAud": 30000,
+          "annualDepreciationAndInterestAud": 4800,
+          "annualUtilisationHa": 2000
+        },
+        "evidenceStatus": "historical equipment example verified; application to wider rows is a scenario assumption"
+      }
+    },
+    "costEvidence": {
+      "stubble": "https://www.agric.wa.gov.au/sites/gateway/files/S1%2BRebecca%2BSmith%2B2017.pdf",
+      "wider": "https://airep.com.au/wp-content/uploads/2020/07/14.-EPF00001-Economic-analysis-of-sowing-position-on-non-wetting-sand.pdf"
+    }
+  },
+  "baselineCDI": {
+    "location": {
+      "displayName": "Wagga Wagga NSW 2650",
+      "suburbOrTown": "",
+      "postcode": null,
+      "latitude": -35.115,
+      "longitude": 147.3677778
+    },
+    "spatialArea": {
+      "id": "757249",
+      "parish": "SOUTH WAGGA WAGGA",
+      "county": "WYNYARD",
+      "lga": null,
+      "llsRegion": null,
+      "level": "parish"
+    },
+    "simulationStartDate": "2026-10-04",
+    "snapshotDate": "2026-08-31",
+    "official": true,
+    "cdiPhase": "Recovery",
+    "rainfallIndex": 41.9093,
+    "soilWaterIndex": 50.3739,
+    "plantGrowthIndex": 58.1328,
+    "droughtDirectionIndex": 0.1112,
+    "source": {
+      "provider": "NSW DPIRD",
+      "dataset": "NSW Combined Drought Indicator / EDIS II — monthly parish snapshot",
+      "url": "https://edis.spaceport.intersect.org.au/",
+      "downloadUrl": "https://edis.spaceport.intersect.org.au/%2FMonthlySnapshot%2FParish%2Fcsv%2F20260831_edisbyParish?download",
+      "geometryUrl": "https://edis.spaceport.intersect.org.au/%2FMonthlySnapshot%2FParish%2FGIS%2F20260831_GISlayers.zip?download",
+      "downloadedAt": "2026-10-04",
+      "snapshotDate": "2026-08-31",
+      "official": true,
+      "license": "CC BY-NC 4.0",
+      "attribution": "Data provided by Climate Branch, NSW Department of Primary Industries and Regional Development on 4 October 2026. EDIS II incorporates third-party data, including ANUClimate. See the portal for full acknowledgements.",
+      "crs": "GDA94 geographic (EPSG:4283)",
+      "coordinatePrecision": 7,
+      "boundaryToleranceDegrees": 0.0002,
+      "geometryProcessing": "Rings generalised by at most 0.0001 degrees; locations within 0.0002 degrees of a boundary are unavailable pending higher-precision resolution.",
+      "checksums": {
+        "20260831_GISlayers.zip": "c46830ca6ff6dd12a8bec8d6f53302cf8090a49c4ff13fa7c656141400a1dc11",
+        "20260831_edisbyParish.csv": "1be666840555812eeb75eae8fde2b96858cabb5bd6236b5f22194a69662e1ca9",
+        "CDI_RGB_HEXtable.csv": "959459422b9fa95953d7afec6964d97afef592ca21090ac0b5c52ed1a55fbd03",
+        "TERMS-AND-CONDITIONS.txt": "dfe0fd03cb6e6823c9482651f750b2b70bbf88c789dd37ea69bc8bb0db9818cb"
+      }
+    },
+    "missingFields": []
+  },
+  "rows": [
+    {
+      "soilType": "clay",
+      "waterSupply": "rainfed",
+      "stubbleRetention": false,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 27.53739,
+          "referenceYieldTPerHa": 2.5949999999999998,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 22.83651,
+          "conditionFactor": 0.9,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.5949999999999998,
+          "wider30cmYieldTPerHa": 2.5127547187499997,
+          "wideRowMultiplier": 0.96830625,
+          "widerRowChangeTPerHa": -0.08224528125000008,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 11.787390000000002,
+          "referenceYieldTPerHa": 2.19,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 38.58651,
+          "conditionFactor": 0.8999999999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.19,
+          "wider30cmYieldTPerHa": 2.130568875,
+          "wideRowMultiplier": 0.9728625,
+          "widerRowChangeTPerHa": -0.05943112500000014,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 7.287390000000002,
+          "referenceYieldTPerHa": 1.5150000000000001,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 43.08651,
+          "conditionFactor": 0.8999999999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 1.5150000000000001,
+          "wider30cmYieldTPerHa": 1.5175376250000003,
+          "wideRowMultiplier": 1.001675,
+          "widerRowChangeTPerHa": 0.00253762500000021,
+          "widerRowsEffect": "helps"
+        }
+      }
+    },
+    {
+      "soilType": "clay",
+      "waterSupply": "rainfed",
+      "stubbleRetention": true,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 30.9628665,
+          "referenceYieldTPerHa": 2.65575,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 19.4110335,
+          "conditionFactor": 0.765,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.65575,
+          "wider30cmYieldTPerHa": 2.569764284296875,
+          "wideRowMultiplier": 0.9676228125,
+          "widerRowChangeTPerHa": -0.08598571570312474,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 17.5753665,
+          "referenceYieldTPerHa": 2.3114999999999997,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 32.7985335,
+          "conditionFactor": 0.765,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.3114999999999997,
+          "wider30cmYieldTPerHa": 2.2456121371874995,
+          "wideRowMultiplier": 0.971495625,
+          "widerRowChangeTPerHa": -0.06588786281250014,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 13.750366500000005,
+          "referenceYieldTPerHa": 1.7377500000000001,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 36.62353349999999,
+          "conditionFactor": 0.7649999999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 1.7377500000000001,
+          "wider30cmYieldTPerHa": 1.7193711215625,
+          "wideRowMultiplier": 0.9894237499999999,
+          "widerRowChangeTPerHa": -0.01837887843750008,
+          "widerRowsEffect": "hurts"
+        }
+      }
+    },
+    {
+      "soilType": "clay",
+      "waterSupply": "irrigated",
+      "stubbleRetention": false,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 35.5301685,
+          "referenceYieldTPerHa": 2.73675,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 14.843731499999997,
+          "conditionFactor": 0.5849999999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.73675,
+          "wider30cmYieldTPerHa": 2.6456478686718747,
+          "wideRowMultiplier": 0.9667115625,
+          "widerRowChangeTPerHa": -0.09110213132812506,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 25.2926685,
+          "referenceYieldTPerHa": 2.4735,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 25.081231499999998,
+          "conditionFactor": 0.585,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.4735,
+          "wider30cmYieldTPerHa": 2.3984864746875,
+          "wideRowMultiplier": 0.969673125,
+          "widerRowChangeTPerHa": -0.07501352531249994,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 22.3676685,
+          "referenceYieldTPerHa": 2.03475,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 28.0062315,
+          "conditionFactor": 0.585,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.03475,
+          "wider30cmYieldTPerHa": 1.9830857899218748,
+          "wideRowMultiplier": 0.9746090625,
+          "widerRowChangeTPerHa": -0.05166421007812505,
+          "widerRowsEffect": "hurts"
+        }
+      }
+    },
+    {
+      "soilType": "clay",
+      "waterSupply": "irrigated",
+      "stubbleRetention": true,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 37.756728224999996,
+          "referenceYieldTPerHa": 2.7762374999999997,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 12.617171775000003,
+          "conditionFactor": 0.49725000000000014,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.7762374999999997,
+          "wider30cmYieldTPerHa": 2.6825875913654293,
+          "wideRowMultiplier": 0.966267328125,
+          "widerRowChangeTPerHa": -0.09364990863457034,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 29.054853225000002,
+          "referenceYieldTPerHa": 2.5524750000000003,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 21.319046774999997,
+          "conditionFactor": 0.4972499999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.5524750000000003,
+          "wider30cmYieldTPerHa": 2.472798615461719,
+          "wideRowMultiplier": 0.96878465625,
+          "widerRowChangeTPerHa": -0.0796763845382813,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 26.568603225,
+          "referenceYieldTPerHa": 2.1795375,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 23.805296775,
+          "conditionFactor": 0.49724999999999997,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.1795375,
+          "wider30cmYieldTPerHa": 2.1206468394685545,
+          "wideRowMultiplier": 0.972980203125,
+          "widerRowChangeTPerHa": -0.05889066053144543,
+          "widerRowsEffect": "hurts"
+        }
+      }
+    },
+    {
+      "soilType": "sandy",
+      "waterSupply": "rainfed",
+      "stubbleRetention": false,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 22.462609999999998,
+          "referenceYieldTPerHa": 2.505,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 27.91129,
+          "conditionFactor": 1.1,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.505,
+          "wider30cmYieldTPerHa": 2.42814346875,
+          "wideRowMultiplier": 0.96931875,
+          "widerRowChangeTPerHa": -0.0768565312499998,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 3.212609999999998,
+          "referenceYieldTPerHa": 2.01,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 47.16129,
+          "conditionFactor": 1.1,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.01,
+          "wider30cmYieldTPerHa": 1.959523875,
+          "wideRowMultiplier": 0.9748875,
+          "widerRowChangeTPerHa": -0.05047612499999987,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 0,
+          "referenceYieldTPerHa": 1.263836140360405,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 50.3739,
+          "conditionFactor": 1.052220520993694,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 1.263836140360405,
+          "wider30cmYieldTPerHa": 1.2834117138585797,
+          "wideRowMultiplier": 1.0154890122801776,
+          "widerRowChangeTPerHa": 0.019575573498174625,
+          "widerRowsEffect": "helps"
+        }
+      }
+    },
+    {
+      "soilType": "sandy",
+      "waterSupply": "rainfed",
+      "stubbleRetention": true,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 26.6493035,
+          "referenceYieldTPerHa": 2.57925,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 23.7245965,
+          "conditionFactor": 0.935,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.57925,
+          "wider30cmYieldTPerHa": 2.497960906171875,
+          "wideRowMultiplier": 0.9684834375,
+          "widerRowChangeTPerHa": -0.08128909382812521,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 10.286803499999998,
+          "referenceYieldTPerHa": 2.1585,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 40.0870965,
+          "conditionFactor": 0.935,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.1585,
+          "wider30cmYieldTPerHa": 2.1006886246875,
+          "wideRowMultiplier": 0.973216875,
+          "widerRowChangeTPerHa": -0.057811375312500246,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 5.611803500000001,
+          "referenceYieldTPerHa": 1.4572500000000002,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 44.7620965,
+          "conditionFactor": 0.9349999999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 1.4572500000000002,
+          "wider30cmYieldTPerHa": 1.4643194840625,
+          "wideRowMultiplier": 1.00485125,
+          "widerRowChangeTPerHa": 0.007069484062499853,
+          "widerRowsEffect": "helps"
+        }
+      }
+    },
+    {
+      "soilType": "sandy",
+      "waterSupply": "irrigated",
+      "stubbleRetention": false,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 32.2315615,
+          "referenceYieldTPerHa": 2.67825,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 18.1423385,
+          "conditionFactor": 0.7150000000000001,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.67825,
+          "wider30cmYieldTPerHa": 2.590857865546875,
+          "wideRowMultiplier": 0.9673696875,
+          "widerRowChangeTPerHa": -0.08739213445312499,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 19.7190615,
+          "referenceYieldTPerHa": 2.3565,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 30.6548385,
+          "conditionFactor": 0.715,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.3565,
+          "wider30cmYieldTPerHa": 2.2881364621875,
+          "wideRowMultiplier": 0.9709893749999999,
+          "widerRowChangeTPerHa": -0.06836353781250004,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 16.1440615,
+          "referenceYieldTPerHa": 1.8202500000000001,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 34.2298385,
+          "conditionFactor": 0.715,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 1.8202500000000001,
+          "wider30cmYieldTPerHa": 1.7927391965625001,
+          "wideRowMultiplier": 0.98488625,
+          "widerRowChangeTPerHa": -0.02751080343750001,
+          "widerRowsEffect": "hurts"
+        }
+      }
+    },
+    {
+      "soilType": "sandy",
+      "waterSupply": "irrigated",
+      "stubbleRetention": true,
+      "outcomes": {
+        "moderate": {
+          "startingSWI": 50.3739,
+          "endingSWI": 34.952912275,
+          "referenceYieldTPerHa": 2.7265125,
+          "rawSeveritySWILoss": 25.3739,
+          "actualSWILoss": 15.420987724999996,
+          "conditionFactor": 0.6077499999999999,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.7265125,
+          "wider30cmYieldTPerHa": 2.6360651766076173,
+          "wideRowMultiplier": 0.966826734375,
+          "widerRowChangeTPerHa": -0.09044732339238282,
+          "widerRowsEffect": "hurts"
+        },
+        "severe": {
+          "startingSWI": 50.3739,
+          "endingSWI": 24.317287274999998,
+          "referenceYieldTPerHa": 2.4530250000000002,
+          "rawSeveritySWILoss": 42.8739,
+          "actualSWILoss": 26.056612725,
+          "conditionFactor": 0.60775,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 2.4530250000000002,
+          "wider30cmYieldTPerHa": 2.379197456430469,
+          "wideRowMultiplier": 0.96990346875,
+          "widerRowChangeTPerHa": -0.07382754356953125,
+          "widerRowsEffect": "hurts"
+        },
+        "extreme": {
+          "startingSWI": 50.3739,
+          "endingSWI": 21.278537274999998,
+          "referenceYieldTPerHa": 1.9972124999999998,
+          "rawSeveritySWILoss": 47.8739,
+          "actualSWILoss": 29.095362725,
+          "conditionFactor": 0.60775,
+          "bounded": false,
+          "reference18cmYieldTPerHa": 1.9972124999999998,
+          "wider30cmYieldTPerHa": 1.9475883851414062,
+          "wideRowMultiplier": 0.9751533125,
+          "widerRowChangeTPerHa": -0.04962411485859364,
+          "widerRowsEffect": "hurts"
+        }
+      }
+    }
+  ],
+  "economicAcceptanceCases": [
+    {
+      "droughtIntensity": "severe",
+      "soilType": "clay",
+      "waterSupply": "rainfed",
+      "stubbleRetention": false,
+      "widerRows": true,
+      "metrics": {
+        "farmAreaHa": 100,
+        "normalYieldTPerHa": 3,
+        "droughtBaselineYieldTPerHa": 2.19,
+        "referenceYieldTPerHa": 2.19,
+        "finalYieldTPerHa": 2.130568875,
+        "wideRowMultiplier": 0.9728625,
+        "normalProductionT": 300,
+        "droughtBaselineProductionT": 219,
+        "finalProductionT": 213.0568875,
+        "cropSavedT": -5.943112500000012,
+        "yieldLossPercent": 28.981037500000006,
+        "revenueAfterDroughtAud": 74569.91062499999,
+        "grossValueProtectedAud": -2080.089375000004,
+        "strategyCostAud": 240,
+        "netBenefitAud": -2320.089375000004,
+        "costStatus": "research-informed-scenario-assumption",
+        "costBasis": [
+          {
+            "strategyId": "wider-rows",
+            "valueAudPerHa": 2.4,
+            "status": "research-informed-scenario-assumption",
+            "basis": "representative annualised equipment/setup allowance",
+            "sourceUrl": "https://airep.com.au/wp-content/uploads/2020/07/14.-EPF00001-Economic-analysis-of-sowing-position-on-non-wetting-sand.pdf",
+            "detail": "EPARF/GRDC Guideline 14 (Ed Hunt, February 2018), page 4: approximately $30,000 additional guidance equipment, $4,800/year depreciation and interest divided across 2,000 ha = $2.40/ha. Farm Forward uses this as a proxy, not a universal quotation for conversion to 30 cm rows. Actual cost varies with machinery, guidance already owned, contractors and annual hectares.",
+            "calculation": {
+              "equipmentCapitalAud": 30000,
+              "annualDepreciationAndInterestAud": 4800,
+              "annualUtilisationHa": 2000
+            },
+            "evidenceStatus": "historical equipment example verified; application to wider rows is a scenario assumption"
+          }
+        ],
+        "missingCostStrategies": [],
+        "aboveNormalReference": false
+      }
+    },
+    {
+      "droughtIntensity": "extreme",
+      "soilType": "sandy",
+      "waterSupply": "rainfed",
+      "stubbleRetention": false,
+      "widerRows": true,
+      "metrics": {
+        "farmAreaHa": 100,
+        "normalYieldTPerHa": 3,
+        "droughtBaselineYieldTPerHa": 1.263836140360405,
+        "referenceYieldTPerHa": 1.263836140360405,
+        "finalYieldTPerHa": 1.2834117138585797,
+        "wideRowMultiplier": 1.0154890122801776,
+        "normalProductionT": 300,
+        "droughtBaselineProductionT": 126.3836140360405,
+        "finalProductionT": 128.34117138585796,
+        "cropSavedT": 1.9575573498174634,
+        "yieldLossPercent": 57.219609538047344,
+        "revenueAfterDroughtAud": 44919.40998505029,
+        "grossValueProtectedAud": 685.1450724361122,
+        "strategyCostAud": 240,
+        "netBenefitAud": 445.1450724361122,
+        "costStatus": "research-informed-scenario-assumption",
+        "costBasis": [
+          {
+            "strategyId": "wider-rows",
+            "valueAudPerHa": 2.4,
+            "status": "research-informed-scenario-assumption",
+            "basis": "representative annualised equipment/setup allowance",
+            "sourceUrl": "https://airep.com.au/wp-content/uploads/2020/07/14.-EPF00001-Economic-analysis-of-sowing-position-on-non-wetting-sand.pdf",
+            "detail": "EPARF/GRDC Guideline 14 (Ed Hunt, February 2018), page 4: approximately $30,000 additional guidance equipment, $4,800/year depreciation and interest divided across 2,000 ha = $2.40/ha. Farm Forward uses this as a proxy, not a universal quotation for conversion to 30 cm rows. Actual cost varies with machinery, guidance already owned, contractors and annual hectares.",
+            "calculation": {
+              "equipmentCapitalAud": 30000,
+              "annualDepreciationAndInterestAud": 4800,
+              "annualUtilisationHa": 2000
+            },
+            "evidenceStatus": "historical equipment example verified; application to wider rows is a scenario assumption"
+          }
+        ],
+        "missingCostStrategies": [],
+        "aboveNormalReference": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+The official snapshot and repository adapter are implemented here. See the root `docs/CDI_DATA.md` for provenance, licence, refresh steps and geometry processing. All required runtime geometry is included.

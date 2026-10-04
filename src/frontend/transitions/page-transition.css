@@ -1,0 +1,20 @@
+html { overflow-x: hidden; background: #f6f3ea; }
+.ff-pre-enter body { opacity: 0; }
+.ff-entering body { animation: ff-page-in 300ms cubic-bezier(.22,1,.36,1) both; }
+.ff-exiting body { animation: ff-page-out 175ms cubic-bezier(.22,1,.36,1) forwards; pointer-events: none; }
+.ff-stage-exiting { animation: ff-page-out 175ms cubic-bezier(.22,1,.36,1) forwards; pointer-events: none; }
+.ff-stage-entering { animation: ff-page-in 300ms cubic-bezier(.22,1,.36,1) both; }
+@keyframes ff-page-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(var(--ff-exit-offset, -8px)); } }
+@keyframes ff-page-in { from { opacity: 0; transform: translateY(var(--ff-enter-offset, 10px)); } to { opacity: 1; transform: translateY(0); } }
+.continue-button { transition: transform 170ms cubic-bezier(.22,1,.36,1), filter 170ms ease; }
+.continue-button:not(:disabled):hover { transform: translateY(-2px); }
+.continue-button:not(:disabled):active { transform: scale(.98); }
+.continue-button:disabled:hover { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .ff-pre-enter body { opacity: 1; }
+  .ff-entering body, .ff-exiting body, .ff-stage-exiting, .ff-stage-entering { animation: none; }
+  .continue-button { transition: none; }
+  .continue-button:not(:disabled):hover, .continue-button:not(:disabled):active { transform: none; }
+}
+
+.ff-stage-backward { --ff-exit-offset: 8px; --ff-enter-offset: -10px; }

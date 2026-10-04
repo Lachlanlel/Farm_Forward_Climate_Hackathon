@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#21483b" />
+    <meta name="description" content="See how drought changes a wheat field with Farm Forward's NSW wheat drought simulator." />
+    <title>Farm Forward — NSW Wheat Drought Simulator</title>
+    <script>
+      if (new URLSearchParams(location.search).get('fresh') === '1') {
+        try {
+          localStorage.removeItem('farm-forward:setup:v1');
+          localStorage.removeItem('farm-forward:setup:v2');
+          localStorage.removeItem('farm-forward:experience:v1');
+          sessionStorage.removeItem('farm-forward:navigating');
+        } catch { /* The page still opens if browser storage is unavailable. */ }
+        history.replaceState(null, '', location.pathname + location.hash);
+        history.scrollRestoration = 'manual';
+        addEventListener('DOMContentLoaded', () => scrollTo(0, 0), { once: true });
+      }
+    </script>
+    <script>try{if(sessionStorage.getItem('farm-forward:navigating'))document.documentElement.classList.add('ff-pre-enter')}catch{}</script>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%2324483c'/%3E%3Cpath d='M31 55V19M31 42l-11-7m11-7-10-7m10 14 12-7m-12-8 10-7' fill='none' stroke='%23e9af44' stroke-width='4' stroke-linecap='round'/%3E%3Cellipse cx='21' cy='18' rx='5' ry='9' transform='rotate(-40 21 18)' fill='%23f1c460'/%3E%3Cellipse cx='39' cy='13' rx='5' ry='9' transform='rotate(40 39 13)' fill='%23f1c460'/%3E%3C/svg%3E" />
+    <style>
+      :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-width: 320px; }
+      body { background: #75513e; }
+      .hero {
+        --field-line: calc(100% - 15px);
+        --dryness: 0;
+        position: relative;
+        isolation: isolate;
+        width: 100%;
+        min-height: 550px;
+        height: 550px;
+        overflow: hidden;
+        color: #f7f5ef;
+        background: linear-gradient(111deg, #22463a 0%, #2b5849 43%, #81937e 100%);
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0 0 calc(100% - var(--field-line));
+        background: linear-gradient(111deg, #654b3b 0%, #8e745b 52%, #b6a68a 100%);
+        opacity: calc(var(--dryness) * .34);
+        pointer-events: none;
+      }
+      .header {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 28px 3.25% 0;
+      }
+      .brand { display: inline-flex; align-items: center; gap: 7px; color: inherit; text-decoration: none; font-size: 16px; font-weight: 800; letter-spacing: -.025em; }
+      .brand svg { width: auto; height: 1.2em; flex: none; fill: #ef7a54; }
+      .eyebrow { margin: 0; font-size: 10px; font-weight: 800; letter-spacing: .29em; white-space: nowrap; }
+      .copy {
+        position: absolute;
+        z-index: 2;
+        top: 15.7%;
+        left: 3%;
+        width: 94%;
+        text-align: center;
+      }
+      h1 {
+        max-width: 1050px;
+        margin: 0 auto;
+        padding-bottom: .14em;
+        margin-bottom: -.14em;
+        color: transparent;
+        background-image: linear-gradient(90deg, #ef7a54 20%, #fa6f41 40%, #df5a4c 60%, #a93662 82%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: clamp(60px, 7.25vw, 104px);
+        line-height: .86;
+        letter-spacing: -.078em;
+        font-weight: 850;
+      }
+      h1 span { display: block; }
+      .copy p {
+        max-width: 690px;
+        margin: 26px auto 0;
+        color: #d5e6a6;
+        font-size: clamp(18px, 1.7vw, 23px);
+        line-height: 1.45;
+        letter-spacing: -.025em;
+      }
+      .soil {
+        position: absolute;
+        z-index: 1;
+        inset: var(--field-line) 0 0;
+        background: linear-gradient(108deg, #63483a 0%, #88614b 53%, #99745b 100%);
+      }
+      .soil::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #ad8b68;
+        opacity: calc(var(--dryness) * .3);
+      }
+      .wheat-field {
+        position: absolute;
+        z-index: 2;
+        left: 2%;
+        width: 96%;
+        bottom: calc(100% - var(--field-line) - 5px);
+        height: 245px;
+        pointer-events: none;
+      }
+      .stalk {
+        position: absolute;
+        display: block;
+        left: var(--x);
+        bottom: 0;
+        width: calc(var(--height) * .5);
+        height: var(--height);
+        transform: translateX(-50%);
+      }
+      .plant-svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      @media (max-width: 750px) {
+        .hero { min-height: 640px; --field-line: calc(100% - 110px); }
+        .header { padding: 24px 5% 0; }
+        .eyebrow { max-width: 160px; text-align: right; white-space: normal; line-height: 1.4; }
+        .copy { top: 18%; left: 5%; width: 90%; }
+        h1 { font-size: clamp(48px, 10.4vw, 78px); line-height: .92; letter-spacing: -.07em; }
+        .copy p { margin-top: 22px; font-size: 18px; }
+        .wheat-field { left: -5%; width: 110%; height: 210px; }
+        .stalk:nth-child(2), .stalk:nth-child(5), .stalk:nth-child(7),
+        .stalk:nth-child(9), .stalk:nth-child(11) { display: none; }
+      }
+      @media (max-width: 430px) {
+        .hero { min-height: 650px; --field-line: calc(100% - 90px); }
+        .brand { font-size: 14px; }
+        .eyebrow { font-size: 8px; letter-spacing: .19em; }
+        .copy { top: 18%; }
+        h1 { font-size: 10.5vw; }
+        .copy p { font-size: 16px; max-width: 320px; }
+        .wheat-field { height: 180px; }
+        .stalk { width: calc(var(--height) * .39); height: calc(var(--height) * .78); }
+      }
+    </style>
+    <link rel="stylesheet" href="/farm-setup.css" />
+    <link rel="stylesheet" href="/frontend/transitions/page-transition.css" />
+  </head>
+  <body>
+    <main class="hero" id="hero">
+      <header class="header">
+        <a class="brand" href="/" aria-label="Farm Forward home"><svg viewBox="0 0 580 374" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M5 0h65c83 0 143 65 163 174h-58C90 174 25 116 5 0Zm195 0h65c83 0 144 65 164 174h-58C286 174 221 116 200 0ZM0 374h65c84 0 145-66 168-177h-59C90 197 23 258 0 374Zm196 0h65c86 0 146-66 168-177h-58c-85 0-152 61-175 177Zm237-279 147 92-151 93c36-62 39-126 4-185Z"/></svg>Farm Forward</a>
+        <p class="eyebrow">NSW WHEAT DROUGHT SIMULATOR</p>
+      </header>
+      <div class="copy">
+        <h1><span>Test your farm before</span><span>drought does.</span></h1>
+        <p>Simulate drought and compare how different strategies affect your farm.</p>
+      </div>
+      <div class="wheat-field" id="wheat-field" role="img" aria-label="Wheat stalks gradually lose colour, curl and bow as drought takes hold"></div>
+      <div class="soil" aria-hidden="true"></div>
+    </main>
+    <section class="farm-setup" id="farm-setup" aria-labelledby="setup-heading">
+      <div class="setup-shell">
+        <h2 id="setup-heading">Tell us about your farm</h2>
+        <p class="setup-intro">A few field details help us model a more useful drought scenario for your property.</p>
+        <form id="farm-form" autocomplete="off" novalidate>
+          <div class="setup-grid">
+            <div class="setup-field" data-field="farmLocation">
+              <svg class="setup-icon" viewBox="0 0 90 90" aria-hidden="true"><path fill-rule="evenodd" d="M45 5C24 5 9 21 9 42c0 22 31 42 36 46 5-4 36-24 36-46C81 21 66 5 45 5Zm0 19a18 18 0 1 0 0 36 18 18 0 0 0 0-36Z"/></svg>
+              <label class="field-title" for="farm-location">Farm location</label>
+              <div class="location-wrap">
+                <input id="farm-location" name="farmLocation" type="text" placeholder="Start typing your address, suburb or town…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="location-options" required />
+                <ul id="location-options" class="location-options" role="listbox" hidden></ul>
+              </div>
+              <p class="field-error" id="location-error" aria-live="polite"></p>
+            </div>
+            <div class="setup-field" data-field="paddockSizeHa">
+              <svg class="setup-icon" viewBox="0 0 90 90" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 45V25L45 6l28 19v20M34 46V31h22v15M8 50c26-1 48 8 74 23M8 62c24-1 40 6 61 22M8 75c18-1 31 3 44 11M71 48c5-2 9-2 13-2M74 62c4-1 7-1 10-1"/></svg>
+              <label class="field-title" for="paddock-size">Paddock size</label>
+              <div class="size-wrap"><input id="paddock-size" name="paddockSizeHa" type="text" inputmode="decimal" placeholder="0" autocomplete="off" required /><span aria-hidden="true">ha</span></div>
+              <p class="field-error" id="paddock-error" aria-live="polite"></p>
+            </div>
+            <div class="setup-field choice-field" data-field="soilType" role="group" aria-labelledby="soil-title">
+              <svg class="setup-icon soil-icon" viewBox="50 38 250 216" aria-hidden="true"><image href="/soil-type-icon.png" width="368" height="320" /></svg>
+              <h3 class="field-title" id="soil-title">Soil type</h3>
+              <div class="select-wrap"><select id="soil-type" name="soilType" aria-labelledby="soil-title" autocomplete="off" required><option value="" disabled hidden selected>Choose soil type</option><option value="sandy">Sandy</option><option value="clay">Clay</option></select></div>
+              <p class="field-error" id="soil-error" aria-live="polite"></p>
+            </div>
+            <div class="setup-field choice-field" data-field="waterSupply" role="group" aria-labelledby="water-title">
+              <svg class="setup-icon" viewBox="0 0 90 90" aria-hidden="true"><path d="M22 30V25a23 23 0 0 1 46 0v5" fill="none" stroke="currentColor" stroke-width="5.5"/><path d="M14 31h62l-5 52H19Z"/><path d="M45 44c-5 7-11 13-11 19a11 11 0 0 0 22 0c0-6-6-12-11-19Z" fill="#fcfcf5"/></svg>
+              <h3 class="field-title" id="water-title">Water supply</h3>
+              <div class="select-wrap"><select id="water-supply" name="waterSupply" aria-labelledby="water-title" autocomplete="off" required><option value="" disabled hidden selected>Choose water supply</option><option value="rain-fed">Rain-fed</option><option value="irrigated">Irrigated</option></select></div>
+              <p class="field-error" id="water-error" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="setup-footer">
+            <button class="continue-button" type="submit" aria-label="Next: save farm setup and continue"><span class="continue-label"><span>Next</span><span class="continue-arrow" aria-hidden="true">→</span></span></button>
+            <ol class="setup-steps" aria-label="Simulator progress"><li class="current"><b>1</b><span>Setup</span></li><li><b>2</b><span>Simulation</span></li><li><b>3</b><span>Results</span></li></ol>
+            <p class="form-status" id="form-status" role="status"></p>
+          </div>
+        </form>
+      </div>
+      <small class="setup-attribution">Location search © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></small>
+    </section>
+    <script src="/farm-state.js"></script>
+    <script type="module" src="/farm-setup.js"></script>
+    <script type="module" src="/frontend/transitions/install-global-transitions.js"></script>
+    <script>
+      const hero = document.getElementById('hero');
+      const field = document.getElementById('wheat-field');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const mix = (a, b, t) => a + (b - a) * t;
+      const colour = (healthy, dry, drought) =>
+        `rgb(${healthy.map((channel, index) => Math.round(mix(channel, dry[index], drought))).join(',')})`;
+      const svgNode = (tag, attributes = {}) => {
+        const node = document.createElementNS(svgNS, tag);
+        for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, value);
+        return node;
+      };
+
+      const variations = [
+        { x: 1.8, height: 172, lean: -2.8, bow: -1, grain: .86, leaf: -8, stem: .92, sway: 1.06, speed: .76, phase: .2, delay: 850 },
+        { x: 10.1, height: 226, lean: 1.7, bow: 1, grain: 1.07, leaf: 4, stem: 1.07, sway: .83, speed: .63, phase: 2.4, delay: 1450 },
+        { x: 14.2, height: 158, lean: -1.1, bow: 1, grain: .88, leaf: -2, stem: .86, sway: 1.17, speed: 1.05, phase: 4.1, delay: 250 },
+        { x: 23.4, height: 214, lean: 2.9, bow: -1, grain: 1.02, leaf: 7, stem: 1.03, sway: 1.12, speed: .81, phase: 1.3, delay: 1900 },
+        { x: 30.7, height: 190, lean: -.4, bow: -1, grain: .94, leaf: 2, stem: .96, sway: .9, speed: .93, phase: 5.2, delay: 500 },
+        { x: 35.1, height: 238, lean: -2.1, bow: 1, grain: 1.1, leaf: -5, stem: 1.12, sway: .75, speed: .7, phase: 2.8, delay: 2250 },
+        { x: 45.6, height: 181, lean: 1.2, bow: 1, grain: .9, leaf: 6, stem: .9, sway: 1.21, speed: .98, phase: 4.9, delay: 1100 },
+        { x: 52.2, height: 222, lean: -2.5, bow: -1, grain: 1.03, leaf: -6, stem: 1.04, sway: .95, speed: .74, phase: .8, delay: 1750 },
+        { x: 57.4, height: 152, lean: 2.4, bow: 1, grain: .87, leaf: 3, stem: .84, sway: 1.22, speed: 1.12, phase: 3.5, delay: 100 },
+        { x: 67.8, height: 232, lean: -.9, bow: 1, grain: 1.08, leaf: -7, stem: 1.09, sway: .8, speed: .68, phase: 5.8, delay: 2050 },
+        { x: 72.2, height: 194, lean: 2.6, bow: -1, grain: .96, leaf: 1, stem: .93, sway: 1.15, speed: .91, phase: 1.9, delay: 650 },
+        { x: 84.6, height: 217, lean: -1.7, bow: -1, grain: 1.02, leaf: 5, stem: 1.01, sway: .87, speed: .79, phase: 4.3, delay: 1550 },
+        { x: 96.1, height: 167, lean: 1.8, bow: 1, grain: .89, leaf: -3, stem: .88, sway: 1.08, speed: 1.02, phase: 2.6, delay: 1250 },
+        { x: 62.1, height: 174, lean: -2.4, bow: -1, grain: .88, leaf: 5, stem: .91, sway: 1.14, speed: .87, phase: 3.9, delay: 720 },
+        { x: 79.7, height: 157, lean: 1.1, bow: 1, grain: .84, leaf: -4, stem: .86, sway: 1.2, speed: 1.07, phase: .6, delay: 1350 },
+        { x: 90.8, height: 203, lean: -2.9, bow: 1, grain: .98, leaf: 6, stem: 1.01, sway: .91, speed: .84, phase: 5.1, delay: 1850 }
+      ];
+
+      function grainPath(side, width, length) {
+        const s = side;
+        return `M 0 2 C ${s * width * .55} 0 ${s * width * 1.02} ${-length * .6} ${s * width} ${-length} ` +
+          `C ${s * width * .5} ${-length * .68} ${s * width * .15} ${-length * .28} 0 2 Z`;
+      }
+
+      function createPlant(spec) {
+        const holder = document.createElement('span');
+        holder.className = 'stalk';
+        holder.style.setProperty('--height', `${spec.height}px`);
+        holder.style.setProperty('--x', `${spec.x}%`);
+        const svg = svgNode('svg', { class: 'plant-svg', viewBox: '0 0 120 240', preserveAspectRatio: 'xMidYMax meet', 'aria-hidden': 'true', focusable: 'false' });
+        const motion = svgNode('g');
+        const leftLeaf = svgNode('path', { style: 'fill:var(--leaf-color)' });
+        const rightLeaf = svgNode('path', { style: 'fill:var(--leaf-alt)' });
+        const stem = svgNode('path', { fill: 'none', 'stroke-linecap': 'round', style: 'stroke:var(--stem-color)' });
+        const head = svgNode('g');
+        const rachis = svgNode('path', {
+          d: 'M 60 98 C 61 73 59 40 60 12', fill: 'none', 'stroke-width': '2.3',
+          'stroke-linecap': 'round', style: 'stroke:var(--stem-color)'
+        });
+        const kernels = svgNode('g');
+        for (let row = 0; row < 8; row++) {
+          const y = 89 - row * 9.5;
+          const taper = 1 - row * .05;
+          const width = 13.8 * taper * spec.grain;
+          const length = 18.2 * taper * spec.grain;
+          for (const side of [-1, 1]) {
+            const grain = svgNode('g', { transform: `translate(60 ${y})` });
+            grain.appendChild(svgNode('path', {
+              d: grainPath(side, width, length),
+              style: `fill:var(${side < 0 ? '--grain-light' : '--grain-dark'})`
+            }));
+            grain.appendChild(svgNode('path', {
+              d: `M ${side * width} ${-length} Q ${side * (width + 3)} ${-length - 5} ${side * (width + 4)} ${-length - 10}`,
+              fill: 'none', 'stroke-width': '.6', 'stroke-linecap': 'round',
+              style: 'stroke:var(--awn-color)'
+            }));
+            kernels.appendChild(grain);
+          }
+        }
+        head.append(rachis, kernels);
+        motion.append(leftLeaf, rightLeaf, stem, head);
+        svg.appendChild(motion);
+        holder.appendChild(svg);
+        field.appendChild(holder);
+        return { spec, svg, motion, leftLeaf, rightLeaf, stem, head, kernels, health: reducedMotion ? 0 : 1, transition: null };
+      }
+
+      const plants = variations.map(createPlant);
+
+      function leafShape(anchorX, anchorY, side, length, drought) {
+        const tipX = anchorX + side * mix(length, length * .67, drought);
+        const tipY = anchorY + mix(-39, 27, drought);
+        const width = mix(6.2, 3.2, drought);
+        return `M ${anchorX} ${anchorY} ` +
+          `C ${anchorX + side * 11} ${anchorY - 10} ${tipX - side * 16} ${tipY - 13} ${tipX} ${tipY} ` +
+          `C ${tipX - side * width} ${tipY + 5} ${anchorX + side * 10} ${anchorY + width} ${anchorX} ${anchorY} Z`;
+      }
+
+      function renderPlant(plant, seconds) {
+        const { spec, svg, motion, leftLeaf, rightLeaf, stem, head, kernels } = plant;
+        const health = plant.health;
+        const drought = 1 - health;
+        const neckX = 60 + spec.lean * 1.45 + spec.bow * drought * 5;
+        const neckY = 98 + drought * 9;
+        const middleX = 60 + spec.lean * .8 + spec.bow * drought * 2.7;
+        stem.setAttribute('d', `M 60 239 C ${60 + spec.lean * .3} 197 ${middleX} 150 ${neckX} ${neckY}`);
+        stem.setAttribute('stroke-width', (mix(3.1, 1.9, drought) * spec.stem).toFixed(2));
+        const leftY = 161 + spec.leaf;
+        const rightY = 183 - spec.leaf * .5;
+        const leftX = 60 + (neckX - 60) * ((239 - leftY) / (239 - neckY)) * .8;
+        const rightX = 60 + (neckX - 60) * ((239 - rightY) / (239 - neckY)) * .8;
+        leftLeaf.setAttribute('d', leafShape(leftX, leftY, -1, 44 + spec.leaf * .35, drought));
+        rightLeaf.setAttribute('d', leafShape(rightX, rightY, 1, 40 - spec.leaf * .3, drought));
+        head.setAttribute('transform',
+          `translate(${neckX - 60} ${neckY - 98}) rotate(${spec.lean * .55 + spec.bow * drought * 18} 60 98)`);
+        kernels.setAttribute('transform',
+          `translate(60 98) scale(${1 - drought * .21} ${1 - drought * .12}) translate(-60 -98)`);
+
+        svg.style.setProperty('--stem-color', colour([210, 170, 88], [179, 149, 105], drought));
+        svg.style.setProperty('--leaf-color', colour([180, 183, 104], [187, 155, 108], drought));
+        svg.style.setProperty('--leaf-alt', colour([194, 187, 105], [195, 161, 111], drought));
+        svg.style.setProperty('--grain-light', colour([240, 196, 104], [216, 182, 127], drought));
+        svg.style.setProperty('--grain-dark', colour([220, 171, 83], [196, 158, 105], drought));
+        svg.style.setProperty('--awn-color', colour([228, 185, 96], [183, 151, 107], drought));
+
+        const amplitude = reducedMotion ? 0 : mix(.32, 1.5, health) * spec.sway;
+        const wind = Math.sin(seconds * spec.speed + spec.phase) * amplitude +
+          Math.sin(seconds * spec.speed * .58 + spec.phase * 1.7) * amplitude * .23;
+        motion.setAttribute('transform', `rotate(${wind.toFixed(3)} 60 239)`);
+      }
+
+      const smoothstep = value => {
+        const t = clamp(value, 0, 1);
+        return t * t * (3 - 2 * t);
+      };
+      const healthyHold = 1100;
+      const declineDuration = 2600;
+      const dryHold = 1600;
+      const reviveDuration = 2300;
+      const lastDecline = Math.max(...variations.map(spec => spec.delay));
+      const reviveStart = healthyHold + lastDecline + declineDuration + dryHold;
+      const cycleDuration = reviveStart + reviveDuration + 1100;
+      let cycleElapsed = 0;
+      let activeElapsed = 0;
+      let lastFrame = null;
+      let frameId = null;
+      let onScreen = !('IntersectionObserver' in window);
+      let manualMode = false;
+
+      function healthAtCycle(spec, elapsed) {
+        const declineStart = healthyHold + spec.delay;
+        if (elapsed < declineStart) return 1;
+        if (elapsed < declineStart + declineDuration)
+          return 1 - smoothstep((elapsed - declineStart) / declineDuration);
+        if (elapsed < reviveStart) return 0;
+        if (elapsed < reviveStart + reviveDuration)
+          return smoothstep((elapsed - reviveStart) / reviveDuration);
+        return 1;
+      }
+
+      function transitionTo(plant, target, duration = 2500) {
+        if (reducedMotion) {
+          plant.health = target;
+          plant.transition = null;
+          return;
+        }
+        plant.transition = { from: plant.health, to: target, start: activeElapsed, duration: Math.max(1, duration) };
+      }
+
+      function updateScene(now) {
+        frameId = null;
+        if (lastFrame !== null && !reducedMotion) {
+          const delta = clamp(now - lastFrame, 0, 100);
+          activeElapsed += delta;
+          if (!manualMode) cycleElapsed = (cycleElapsed + delta) % cycleDuration;
+        }
+        lastFrame = now;
+        let totalDrought = 0;
+        for (const plant of plants) {
+          if (!manualMode) {
+            plant.health = reducedMotion ? 0 : healthAtCycle(plant.spec, cycleElapsed);
+          } else {
+            const change = plant.transition;
+            if (change) {
+              const fraction = clamp((activeElapsed - change.start) / change.duration, 0, 1);
+              plant.health = mix(change.from, change.to, smoothstep(fraction));
+              if (fraction === 1) plant.transition = null;
+            }
+          }
+          renderPlant(plant, activeElapsed / 1000);
+          totalDrought += 1 - plant.health;
+        }
+        hero.style.setProperty('--dryness', (totalDrought / plants.length).toFixed(3));
+        if (onScreen && !document.hidden && !reducedMotion) frameId = requestAnimationFrame(updateScene);
+      }
+
+      function syncAnimation() {
+        const shouldRun = onScreen && !document.hidden && !reducedMotion;
+        if (shouldRun && frameId === null) {
+          lastFrame = null;
+          frameId = requestAnimationFrame(updateScene);
+        } else if (!shouldRun && frameId !== null) {
+          cancelAnimationFrame(frameId);
+          frameId = null;
+          lastFrame = null;
+        }
+      }
+
+      updateScene(performance.now());
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(([entry]) => {
+          onScreen = entry.isIntersecting;
+          syncAnimation();
+        }, { threshold: .01 }).observe(hero);
+      }
+      document.addEventListener('visibilitychange', syncAnimation);
+      window.farmForward = Object.freeze({
+        setHealth(value, duration = 2500) {
+          manualMode = true;
+          plants.forEach(plant => transitionTo(plant, clamp(Number(value) || 0, 0, 1), duration));
+          if (reducedMotion) updateScene(performance.now());
+        },
+        getHealth() { return plants.reduce((sum, plant) => sum + plant.health, 0) / plants.length; },
+        resumeLoop() { manualMode = false; cycleElapsed = 0; }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+EDIS material and SCIP have been developed by the NSW Department of Primary Industries and Regional Development using its own data and data supplied by the third parties who are acknowledged here (Third Party Owners):
+https://edis.dpi.nsw.gov.au/about
+
+The data, information, and other material (Material) in this web portal is provided for information only.  The NSW Department of Primary Industries and Regional Development does not use parish level data to target assistance, including drought assistance.  For assistance, please visit DroughtHub:  https://www.droughthub.nsw.gov.au/ 
+
+COPYRIGHT LICENSE
+The portal and the Material in it is owned by the State of New South Wales acting through NSW Department of Primary Industries and Regional Development and the Third Party Owners.  The Material is subject to copyright protection under the Copyright Act 1968 (Cth).
+Unless otherwise stated, the datasets and information in this portal are licensed under a Creative Commons Attribution-NonCommerical 4.0 International License: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+You must acknowledge the Department and the relevant Third Party Owners and retain the attribution information provided with your download. 
+If you wish to use EDIS data on a commerical basis, please contact the Seasonal Conditions Team at seasonal.conditions@dpi.nsw.gov.au.
+
+Disclaimer - data downloads
+You are solely responsible for your use of this site (and any information or material available from it) and you accept all risks and consequences that might arise from your use of this site (and any information or material available from it).  Information from this site: 
+- includes material provided by third parties
+- is subject to the uncertainties of scientific and technical research
+- may not be accurate, current or complete
+- is subject to change without notice
+- is not a substitute for independent professional advice and you should obtain specific professional advice relevant to your particular circumstances.
+
+Acknowledgement
+Include in publications an acknowledgement with language similar to:
+"Data provided by Climate and Natural Resources Division, NSW Department of Primary Industries and Regional Development on [date]"
+
+

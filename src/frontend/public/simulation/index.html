@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <base href="/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f3ea" />
+    <meta name="description" content="Preview drought conditions and adaptation choices for a NSW wheat farm." />
+    <title>Visual Simulation — Farm Forward</title>
+    <script>try{if(sessionStorage.getItem('farm-forward:navigating'))document.documentElement.classList.add('ff-pre-enter')}catch{}</script>
+    <link rel="stylesheet" href="/farm-setup.css" />
+    <link rel="stylesheet" href="/frontend/transitions/page-transition.css" />
+    <link rel="stylesheet" href="/frontend/pages/visual-simulation.css" />
+  </head>
+  <body>
+    <div id="simulation-root"></div>
+    <noscript><p style="padding:2rem;font-family:Arial,sans-serif">Enable JavaScript to view the Farm Forward visual simulator.</p></noscript>
+    <script src="/farm-state.js"></script>
+    <script type="module" src="/frontend/pages/visual-simulation.js"></script>
+  </body>
+</html>

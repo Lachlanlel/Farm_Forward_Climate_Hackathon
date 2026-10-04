@@ -1,0 +1,61 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createSimulatorUiState } from '../src/frontend/state/simulator-ui-state.js';
+
+test('one clock controls start, pause, resume, scrub, completion and reset', () => {
+  const oldRaf = globalThis.requestAnimationFrame;
+  const oldCancel = globalThis.cancelAnimationFrame;
+  const oldPerformance = globalThis.performance;
+  let now = 0, nextId = 0;
+  const callbacks = new Map();
+  globalThis.requestAnimationFrame = callback => { callbacks.set(++nextId, callback); return nextId; };
+  globalThis.cancelAnimationFrame = id => callbacks.delete(id);
+  Object.defineProperty(globalThis, 'performance', { configurable: true, value: { now: () => now } });
+  const step = ms => { now += ms; const entries = [...callbacks]; callbacks.clear(); entries.forEach(([, callback]) => callback(now)); };
+  try {
+    const ui = createSimulatorUiState('severe');
+    ui.startSimulation();
+    step(8000);
+    assert.equal(ui.get().simulationDay, 28);
+    ui.pause();
+    step(5000);
+    assert.equal(ui.get().simulationDay, 28);
+    ui.resume();
+    step(8000);
+    assert.equal(ui.get().simulationDay, 56);
+    ui.seek(42);
+    assert.equal(ui.get().simulationDay, 42);
+    step(12000);
+    assert.equal(ui.get().simulationDay, 84);
+    assert.equal(ui.get().simulationStatus, 'complete');
+    assert.equal(callbacks.size, 0);
+    ui.seek(28);
+    assert.equal(ui.get().simulationStatus, 'paused');
+    ui.startSimulation();
+    step(4000);
+    assert.equal(ui.get().simulationDay, 42);
+    assert.equal(callbacks.size, 1);
+    ui.pause();
+    ui.seek(0);
+    assert.equal(ui.get().simulationStatus, 'idle');
+    ui.seek(14);
+    ui.startSimulation();
+    step(4000);
+    assert.equal(ui.get().simulationDay, 28);
+    ui.toggleStrategy('wider-rows');
+    assert.equal(callbacks.size, 0);
+    assert.equal(ui.get().simulationDay, 0);
+    ui.reset();
+    assert.equal(ui.get().simulationDay, 0);
+    ui.startSimulation();
+    ui.setDroughtIntensity('extreme');
+    assert.equal(ui.get().simulationDay, 0);
+    assert.equal(ui.get().simulationStatus, 'idle');
+    assert.equal(callbacks.size, 0);
+    ui.dispose();
+  } finally {
+    globalThis.requestAnimationFrame = oldRaf;
+    globalThis.cancelAnimationFrame = oldCancel;
+    Object.defineProperty(globalThis, 'performance', { configurable: true, value: oldPerformance });
+  }
+});

@@ -1,0 +1,7 @@
+category,value,R,G,B,HEX
+Intense Drought,0,191,38,0,#BE2600
+Drought,1,230,152,0,#E59700
+Drought Affected (intensifying),2,239,228,190,#EEE3BD
+Drought Affected (weakening),3,255,247,235,#FEF6EA
+Recovery,4,163,255,115,#A2FE73
+Non-Drought,5,76,115,0,#4C7300
