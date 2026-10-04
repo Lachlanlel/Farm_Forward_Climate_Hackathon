@@ -1,5 +1,7 @@
 # Release verification — 4 October 2026
 
+**Latest follow-up:** [Release-candidate QA](RELEASE_CANDIDATE_QA.md) records the public deployment, 100 passing tests, 536 matrix/generated API cases and final browser checks. The sections below preserve the original handoff verification history.
+
 This verification applies to the current repository handoff, after the completed Results, multi-comparison, dynamic-yield and Scenario Summary work. It replaces the original 36-test archive verification.
 
 ## Clean-copy checks
@@ -34,7 +36,7 @@ The fresh build's smoke check performs the official baseline → projection → 
 
 After the original handoff, the server gained a configurable bind address and a public `npm start` entry point. `render.yaml` specifies a free Node web service. No frontend, modelling, Results, data or asset files changed. The original source audit remains a historical handoff record; the current checksum manifest covers these hosting additions.
 
-Validation after the hosting change: build and typecheck passed, all 91 tests passed, and `verify-demo.mjs` passed. The new `verify-hosting.mjs` also passed: it starts the public server with a temporary `PORT`, then checks all 59 assets, routes and three backend APIs over actual HTTP. This check is included in GitHub CI. Public deployment and browser verification are still pending Render account sign-in.
+Validation at hosting preparation: build and typecheck passed, all 91 tests passed, and `verify-demo.mjs` passed. The new `verify-hosting.mjs` also passed: it starts the public server with a temporary `PORT`, then checks all 59 assets, routes and three backend APIs over actual HTTP. This check is included in GitHub CI. The subsequent public deployment and expanded QA are recorded in the report above.
 
 ## Original browser evidence and scope
 

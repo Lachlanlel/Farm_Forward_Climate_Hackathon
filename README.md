@@ -126,6 +126,8 @@ Start with **[DEMO_GUIDE.md](DEMO_GUIDE.md)** for sample settings, expected resu
 - [Current handoff guide](HANDOFF_README.md)
 - [Release contents](HANDOFF_MANIFEST.md)
 - [Verification results](docs/VERIFICATION.md)
+- [Final release-candidate QA report](docs/RELEASE_CANDIDATE_QA.md)
+- [336-case numeric QA matrix](docs/RELEASE_QA_MATRIX.json)
 - [Results implementation and assumptions](docs/RESULTS_GUIDE.md)
 - [Backend calibration matrix](docs/RESULTS_CALIBRATION_MATRIX.md)
 - [Data provenance and attribution](docs/CDI_DATA.md)
