@@ -21,6 +21,12 @@ const chartHtml = html => html.match(/<figure[\s\S]*?<\/figure>/)[0];
 const tableHtml = html => html.match(/<table[\s\S]*?<\/table>/)[0];
 const descending = scenarios => scenarios.every((scenario, i) => i === 0 || scenarios[i - 1].value >= scenario.value);
 
+test('narrow comparison chart and table expose scrolling guidance and keyboard access', () => {
+  const html = renderYieldComparisonStep(runs.stubble, ['wider', 'combined']);
+  assert.match(html, /Swipe or scroll sideways/);
+  for (const name of ['yield-chart-scroll', 'comparison-table-scroll']) assert.match(html, new RegExp(`class="${name}" tabindex="0" role="region" aria-label="[^"]*scroll horizontally`));
+});
+
 for (const [title, current, selected, expected] of [
   ['A: stubble with wider only', 'stubble', ['wider'], ['normal', 'drought', 'stubble', 'wider']],
   ['B: stubble with both alternatives', 'stubble', ['wider', 'combined'], ['normal', 'drought', 'stubble', 'wider', 'combined']],

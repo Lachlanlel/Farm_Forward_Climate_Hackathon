@@ -1,5 +1,9 @@
 # Publish the working demo
 
+**Live demo:** https://farm-forward-052x.onrender.com/
+
+Current Render service: `srv-db1265lg1s2s73878h80`, Singapore region, Free plan. The service was created from the public Git repository; update it through **Manual Deploy → Deploy latest commit** after pushing changes, and verify the deployed commit. Do not assume a GitHub push has updated the public demo.
+
 The repository is https://github.com/Lachlanlel/Farm_Forward_Climate_Hackathon.
 Use this repository's latest `main` branch. No old ZIP or separate backend is needed.
 

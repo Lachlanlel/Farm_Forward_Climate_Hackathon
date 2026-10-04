@@ -60,7 +60,11 @@ export const appSession = Object.freeze({
     return snapshot();
   },
   updateSimulation(patch) {
-    if (patch.status && patch.status !== 'complete') patch = { ...patch, completedRun: null };
+    if (patch.status && patch.status !== 'complete') {
+      patch = { ...patch, completedRun: null };
+      // Comparisons belong to one completed Results journey, never a later run.
+      current = { ...current, results: structuredClone(defaults.results) };
+    }
     current = { ...current, simulation: { ...current.simulation, ...patch } };
     save();
     return snapshot();

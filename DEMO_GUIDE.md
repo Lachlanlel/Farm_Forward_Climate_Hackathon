@@ -1,5 +1,7 @@
 # Farm Forward demo recording guide
 
+**Working demo:** https://farm-forward-052x.onrender.com/ — share this link for interactive judging and use it to record the video. Allow the free service to wake up before recording. Submit the video’s uploaded URL separately.
+
 Use the website built from this repository. No pre-recorded video is included; these instructions and current screenshots are the recording handoff.
 
 Visual references: [Final yield comparison](docs/screenshots/yield-comparison.png) and [Scenario Summary](docs/screenshots/scenario-summary.png).

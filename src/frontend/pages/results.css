@@ -100,6 +100,8 @@ button { font: inherit; }
 .chart-column.strategy .chart-label strong { color: #d3e785; }
 .chart-label small { color: #b6c8b0; font-size: 10px; }
 .comparison-table-scroll { width: 100%; overflow-x: auto; border-radius: 13px; box-shadow: 0 10px 18px rgb(7 24 15 / 27%); }
+.comparison-scroll-hint { display: none; margin: 0; color: #305544; font-size: 14px; text-align: center; }
+.yield-chart-scroll:focus-visible, .comparison-table-scroll:focus-visible { outline: 3px solid #799846; outline-offset: 3px; }
 .comparison-table { width: 100%; min-width: var(--table-min-width); border-collapse: collapse; background: #0d3025; color: #f3f8ee; table-layout: fixed; }
 .comparison-table th, .comparison-table td { padding: clamp(9px, 1.15svh, 14px) clamp(9px, 1.4vw, 20px); border-right: 1px solid rgb(181 221 159 / 10%); border-bottom: 1px solid rgb(181 221 159 / 12%); }
 .comparison-table thead th { height: 48px; font-family: "Plus Jakarta Sans", Arial, sans-serif; font-size: clamp(12px, .95vw, 15px); font-weight: 700; text-align: left; }
@@ -145,6 +147,7 @@ button { font: inherit; }
   .results-yield-screen .yield-chart { height: 240px; }
 }
 @media (max-width: 900px) {
+  .comparison-scroll-hint { display: block; }
   .results-metrics-screen { gap: 28px; padding: 32px 5%; }
   .metrics-composition { grid-template-columns: 1fr; min-height: 0; gap: 28px; }
   .metrics-left { min-height: 260px; padding-bottom: 10px; }
@@ -185,5 +188,5 @@ button { font: inherit; }
   .results-page, .strategy-result-card { transition: none; }
 }
 
-/* Results remains an explicitly labelled frontend demo until the backend is connected. */
+/* Keep provisional model assumptions visible throughout the Results journey. */
 .results-demo-notice { width: 100%; margin: 0; color: inherit; opacity: .85; font-size: 14px; line-height: 1.4; text-align: center; }

@@ -2,6 +2,10 @@
 
 **You can’t prevent drought. You can prepare for it.**
 
+**[Open the working demo](https://farm-forward-052x.onrender.com/)** · [Source code](https://github.com/Lachlanlel/Farm_Forward_Climate_Hackathon)
+
+The complete simulator and Results backend run at the demo link. No installation or account is needed. Free hosting can take around a minute to wake after inactivity; allow the page to finish loading. The team’s video walkthrough is a separate submission asset.
+
 Farm Forward is an interactive drought resilience simulator that helps NSW wheat farmers visualise drought impacts, compare adaptation strategies and explore more informed decisions before the next dry season.
 
 **Current release: 4 October 2026 (Australia/Sydney).** This repository contains the complete frontend and backend, including the finished Results experience, required assets and bundled data.
@@ -66,7 +70,7 @@ The framework can later expand to support:
 | Data modelling | Agricultural research and versioned educational drought, yield and economics calculations |
 | Drought framework | Official NSW Combined Drought Indicator baseline data and bundled parish geometry |
 | Scenario insights / AI | Deterministic structured analysis and templates; optional validated wording adapter. No external AI service or API key is configured or required |
-| Hosting | Render-ready Node.js web service; deployment configuration in `render.yaml`. A live demo URL will be added after deployment and verification |
+| Hosting | Render Node.js Web Service (Free), serving both the frontend and backend at the working demo link above; reproducible configuration in `render.yaml` |
 
 ## Prerequisites
 
@@ -111,7 +115,7 @@ node scripts/verify-hosting.mjs
 node scripts/verify-handoff.mjs
 ```
 
-Build first: the tests and demo check use the compiled Worker. The current suite contains **91 tests**. The handoff check verifies committed files against `HANDOFF_FILES.sha256`; after intentional changes, regenerate it with `node scripts/verify-handoff.mjs --write`, then verify again. GitHub Actions runs the build and checks on pushes and pull requests.
+Build first: the tests and demo check use the compiled Worker. The current suite contains **100 tests**, including all 48 model configurations at seven farm sizes (336 API cases), 200 seeded cases, network-failure handling and cross-run state checks. The handoff check verifies committed files against `HANDOFF_FILES.sha256`; after intentional changes, regenerate it with `node scripts/verify-handoff.mjs --write`, then verify again. GitHub Actions runs the build and checks on pushes and pull requests.
 
 See the [handoff guide](HANDOFF_README.md) for alternative ports, source layout and troubleshooting.
 
@@ -145,9 +149,11 @@ Start with **[DEMO_GUIDE.md](DEMO_GUIDE.md)** for sample settings, expected resu
 
 ## Sharing and Hosting
 
-The repository shares the complete source. It does **not** automatically publish the website. Collaborators can clone or download it and follow the local-run steps above. The localhost address works only on the computer running the server.
+The [public working demo](https://farm-forward-052x.onrender.com/) is hosted on Render. Share that link with judges and anyone recording the video. The GitHub repository shares the complete source; collaborators can also clone it and follow the local-run steps above. The localhost address works only on the computer running the server.
 
 For a public demo, deploy this repository as a **Render Web Service** using the included `render.yaml`. It runs the frontend, 3D assets and calculation APIs together. The configuration explicitly uses Render's free plan; idle services can take longer to wake up. See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment and verification instructions. GitHub Pages alone cannot run this app’s backend APIs.
+
+Results refresh reloads the completed run and returns to Final Key Metrics; comparison selections remain available for that run. Refreshing or revisiting Simulation restarts its timeline at Week 0. **Finished** returns to Setup, retains farm inputs, and clears the completed run and comparisons. Complete a new run before reopening Results. On narrow screens, scroll the chart and table sideways to view every scenario.
 
 The retained `.openai/hosting.json` identifies the original Sites project; it is not a credential and does not grant deployment access. Render deployment does not require that original project.
 

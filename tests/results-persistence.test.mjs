@@ -20,8 +20,10 @@ test('completed run survives page-module reload, clears on reset/scenario change
   const refreshed = (await import('../src/frontend/state/app-session.js?refresh')).appSession;
   assert.deepEqual(refreshed.get().simulation.completedRun, completedRun);
   assert.deepEqual(await calculateRunResults(repo, refreshed.get().simulation.completedRun), before);
+  refreshed.updateResults({ step: 3, selectedStrategies: ['stubble', 'wider'] });
   refreshed.updateSimulation({ status: 'idle', droughtIntensity: 'moderate' });
   assert.equal(refreshed.get().simulation.completedRun, null);
+  assert.deepEqual(refreshed.get().results, { step: 0, selectedStrategies: [] }, 'starting another simulation clears the previous Results journey');
   refreshed.updateSimulation({ status: 'complete', completedRun });
   refreshed.finishSession();
   assert.equal(refreshed.get().simulation.completedRun, null);
@@ -29,4 +31,14 @@ test('completed run survives page-module reload, clears on reset/scenario change
   const legacy = (await import('../src/frontend/state/app-session.js?legacy')).appSession;
   assert.equal(legacy.get().simulation.completedRun, null);
   await assert.rejects(calculateRunResults(repo, legacy.get().simulation.completedRun), /Complete a simulation/);
+});
+
+test('corrupted persisted JSON recovers to an empty run; malformed descriptors fail validation', async () => {
+  let index = 0;
+  for (const saved of ['{broken', 'null', '"invalid"', JSON.stringify({ simulation: { completedRun: { broken: true } }, results: { selectedStrategies: ['unknown'] } })]) {
+    storage.set('farm-forward:experience:v1', saved);
+    const session = (await import(`../src/frontend/state/app-session.js?corrupted-${index++}`)).appSession;
+    assert.deepEqual(session.get().results.selectedStrategies, []);
+    await assert.rejects(calculateRunResults(repo, session.get().simulation.completedRun));
+  }
 });
