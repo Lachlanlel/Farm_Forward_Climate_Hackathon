@@ -83,6 +83,7 @@ test('comparison cards use whole-farm backend costs at 100, 250 and 500 ha, incl
 test('main card copy is concise, matches the requested descriptions and excludes model terminology', async () => {
   const html = renderStrategyComparisonStep(await results(), []);
   assert.match(html, /Keeps more moisture in the soil, helping protect the crop during drought\./);
+  assert.match(html, /Timing <br>determines/, 'words remain separated when the mobile layout hides the line break');
   assert.match(html, /Can help in very dry conditions, but may reduce yield when conditions are better\./);
   assert.match(html, /Uses both strategies together to see whether the combined approach performs better\./);
   assert.doesNotMatch(html, /\bSWI\b|\bRI\b|\bPGI\b|multiplier|interpolation|conditionFactor|18 cm|research-based adjustment/);
