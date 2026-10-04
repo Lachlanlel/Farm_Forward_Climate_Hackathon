@@ -6,8 +6,8 @@ Visual references: [Final yield comparison](docs/screenshots/yield-comparison.pn
 
 ## Before recording
 
-1. Follow the README installation commands and start `npm run dev`.
-2. Open http://127.0.0.1:4174/ in a desktop browser with WebGL enabled.
+1. Use the verified public demo once deployed (see [DEPLOYMENT.md](DEPLOYMENT.md)), or follow the README installation commands and start `npm run dev` locally.
+2. Open the actual deployed HTTPS URL, or http://127.0.0.1:4174/ for local use, in a desktop browser with WebGL enabled. Allow a sleeping free hosting service to wake up before recording.
 3. Choose a comfortable desktop window size and keep browser zoom at 100%. Record the browser window using your normal screen recorder; retain the app's educational-model notice.
 4. Search for **Wagga Wagga** and select the actual autocomplete result (typing without selecting is insufficient). Enter **100 hectares**, **Clay**, **Rain-fed**.
 5. Continue to Simulation. Choose **Severe** drought and enable **Stubble retention** and **Wider Row Spacing**.

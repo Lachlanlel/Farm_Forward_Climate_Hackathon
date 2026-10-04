@@ -3,6 +3,18 @@ import { readdir, readFile } from 'node:fs/promises';
 import worker from '../dist/server/index.js';
 
 const root = new URL('../', import.meta.url);
+// Set DEMO_BASE_URL to run the same asset and calculation checks over real HTTP.
+const baseUrl = process.env.DEMO_BASE_URL;
+async function request(request) {
+  if (!baseUrl) return worker.fetch(request);
+  const target = new URL(new URL(request.url).pathname, baseUrl);
+  return fetch(target, {
+    method: request.method,
+    headers: request.headers,
+    ...(['GET', 'HEAD'].includes(request.method) ? {} : { body: await request.arrayBuffer() }),
+    signal: AbortSignal.timeout(120000),
+  });
+}
 let assetCount = 0;
 async function verifyAssets(directory, prefix, excludes = []) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -10,7 +22,7 @@ async function verifyAssets(directory, prefix, excludes = []) {
     const file = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
     if (entry.isDirectory()) await verifyAssets(file, prefix + entry.name + '/');
     else {
-      const response = await worker.fetch(new Request('http://demo.test' + prefix + entry.name));
+      const response = await request(new Request('http://demo.test' + prefix + entry.name));
       assert.equal(response.status, 200, prefix + entry.name);
       assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(file), prefix + entry.name);
       assetCount++;
@@ -21,13 +33,13 @@ await verifyAssets(new URL('src/frontend/public/', root), '/');
 await verifyAssets(new URL('src/frontend/', root), '/frontend/', ['public', 'scene']);
 await verifyAssets(new URL('src/shared/', root), '/shared/');
 for (const route of ['/', '/simulation/', '/results/', '/data-attribution/', '/frontend/scene/farm-scene.js']) {
-  const response = await worker.fetch(new Request('http://demo.test' + route));
+  const response = await request(new Request('http://demo.test' + route));
   assert.equal(response.status, 200, route);
   assert.ok((await response.arrayBuffer()).byteLength > 0, route);
 }
-assert.equal((await worker.fetch(new Request('http://demo.test/frontend/mock/results-data.js'))).status, 404);
+assert.equal((await request(new Request('http://demo.test/frontend/mock/results-data.js'))).status, 404);
 async function post(route, body) {
-  const response = await worker.fetch(new Request('http://demo.test' + route, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }));
+  const response = await request(new Request('http://demo.test' + route, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }));
   const data = await response.json();
   assert.equal(response.status, 200, JSON.stringify(data));
   return data;

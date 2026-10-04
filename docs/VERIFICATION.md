@@ -30,7 +30,13 @@ The suite includes the original numerical/water/scene audits, 48-scenario invari
 
 The fresh build's smoke check performs the official baseline → projection → completed Results flow directly through the compiled Worker. The sample Severe / Clay / Rain-fed / Combined / 100 ha case returns $840 Implementation cost and approximately +$1,106 net benefit, with Stubble retention ranking above the combined strategy.
 
-## Browser evidence and scope
+## Render hosting preparation
+
+After the original handoff, the server gained a configurable bind address and a public `npm start` entry point. `render.yaml` specifies a free Node web service. No frontend, modelling, Results, data or asset files changed. The original source audit remains a historical handoff record; the current checksum manifest covers these hosting additions.
+
+Validation after the hosting change: build and typecheck passed, all 91 tests passed, and `verify-demo.mjs` passed. The new `verify-hosting.mjs` also passed: it starts the public server with a temporary `PORT`, then checks all 59 assets, routes and three backend APIs over actual HTTP. This check is included in GitHub CI. Public deployment and browser verification are still pending Render account sign-in.
+
+## Original browser evidence and scope
 
 The final working application's Results comparison and Scenario Summary were inspected in the browser at desktop and mobile widths before packaging. Current screenshots are in `docs/screenshots/`. The release retains that executable source byte-for-byte; the release copy was independently verified by build, tests and compiled-Worker route/API checks.
 

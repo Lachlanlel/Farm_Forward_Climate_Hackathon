@@ -61,12 +61,12 @@ The framework can later expand to support:
 |---|---|
 | Frontend | HTML, CSS and plain JavaScript with DOM-based UI components |
 | 3D visualisation | Three.js and TypeScript, with local GLB models |
-| Backend | JavaScript Worker serving the website and same-origin calculation APIs; Node.js server for local use |
+| Backend | JavaScript Worker serving the website and same-origin calculation APIs; Node.js server for local use and public hosting |
 | Build and validation | esbuild, TypeScript and Node.js’s built-in test runner |
 | Data modelling | Agricultural research and versioned educational drought, yield and economics calculations |
 | Drought framework | Official NSW Combined Drought Indicator baseline data and bundled parish geometry |
 | Scenario insights / AI | Deterministic structured analysis and templates; optional validated wording adapter. No external AI service or API key is configured or required |
-| Hosting | Worker-compatible build with original Sites project metadata retained; this repository release has not been published as a live website |
+| Hosting | Render-ready Node.js web service; deployment configuration in `render.yaml`. A live demo URL will be added after deployment and verification |
 
 ## Prerequisites
 
@@ -107,6 +107,7 @@ Before recording a demo or submitting changes, run:
 npm run typecheck
 npm test
 node scripts/verify-demo.mjs
+node scripts/verify-hosting.mjs
 node scripts/verify-handoff.mjs
 ```
 
@@ -146,7 +147,9 @@ Start with **[DEMO_GUIDE.md](DEMO_GUIDE.md)** for sample settings, expected resu
 
 The repository shares the complete source. It does **not** automatically publish the website. Collaborators can clone or download it and follow the local-run steps above. The localhost address works only on the computer running the server.
 
-The retained `.openai/hosting.json` identifies the original Sites project; it is not a credential and does not grant deployment access. That project was unavailable from the connected account during handoff. GitHub Pages alone cannot run this app’s backend APIs. See [DEPLOYMENT.md](DEPLOYMENT.md).
+For a public demo, deploy this repository as a **Render Web Service** using the included `render.yaml`. It runs the frontend, 3D assets and calculation APIs together. The configuration explicitly uses Render's free plan; idle services can take longer to wake up. See [DEPLOYMENT.md](DEPLOYMENT.md) for deployment and verification instructions. GitHub Pages alone cannot run this app’s backend APIs.
+
+The retained `.openai/hosting.json` identifies the original Sites project; it is not a credential and does not grant deployment access. Render deployment does not require that original project.
 
 ## Intended Impact
 

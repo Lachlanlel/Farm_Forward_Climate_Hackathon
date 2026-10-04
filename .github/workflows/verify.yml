@@ -16,4 +16,5 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: node scripts/verify-demo.mjs
+      - run: node scripts/verify-hosting.mjs
       - run: node scripts/verify-handoff.mjs
